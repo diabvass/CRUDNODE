@@ -35,7 +35,7 @@ export default function Suppression() {
     }, 1000);
   };
   const chargeListe = () => {
-    fetch("http://192.168.1.75:8080/liste")
+    fetch(`${import.meta.env.VITE_API_URL}:8080/liste`)
       .then((res) => res.json())
       .then((result) => {
         setData(result.data);
