@@ -4,6 +4,7 @@ import Insertion from "../components/insertion/Insertion";
 import Liste from "../components/listePersonnel/liste";
 import Suppression from "../components/suppression/suppression";
 import Home from "../components/home/Home";
+import Update from "../components/update/Update";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -23,9 +24,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "modification",
-        Component: () => (
-          <h2 style={{ textAlign: "center" }}>Page Modification</h2>
-        ),
+        Component: Update
       },
       {
         path: "suppression",
