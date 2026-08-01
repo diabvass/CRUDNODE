@@ -27,7 +27,7 @@ export default function Liste() {
   const [rowsPerPage, setRowsPerPage] = useState(5);
 
   useEffect(() => {
-    fetch("http://localhost:8080/liste")
+    fetch("http://192.168.1.75:8080/liste")
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erreur serveur");

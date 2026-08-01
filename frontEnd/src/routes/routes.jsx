@@ -3,6 +3,7 @@ import Layout from "../layouts/Layout";
 import Insertion from "../components/insertion/Insertion";
 import Liste from "../components/listePersonnel/liste";
 import Suppression from "../components/suppression/suppression";
+import Home from "../components/home/Home";
 export const router = createBrowserRouter([
   {
     path: "/",
@@ -10,9 +11,7 @@ export const router = createBrowserRouter([
     children: [
       {
         index: true,
-        Component: () => (
-          <h2 style={{ textAlign: "center" }}>Page d'Accueil</h2>
-        ),
+        Component: Home
       },
       {
         path: "insertion",

@@ -35,7 +35,7 @@ export default function Suppression() {
     }, 1000);
   };
   const chargeListe = () => {
-    fetch("http://localhost:8080/liste")
+    fetch("http://192.168.1.75:8080/liste")
       .then((res) => res.json())
       .then((result) => {
         setData(result.data);

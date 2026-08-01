@@ -1,13 +1,16 @@
 import { Outlet } from "react-router";
 import Navbar from "../components/navBar/Navbar";
+import { CssBaseline, Container, Toolbar } from "@mui/material";
 
 export default function Layout() {
   return (
     <>
+      <CssBaseline />
       <Navbar />
-      <div style={{ marginTop: "80px", fontSize : 12 }}>
+      <Toolbar />
+      <Container maxWidth="md">
         <Outlet />
-      </div>
+      </Container>
     </>
   );
 }
