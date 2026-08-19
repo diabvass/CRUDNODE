@@ -8,7 +8,7 @@ import {
   Button,
   TextField,
 } from "@mui/material";
-import { useDelete } from "./query";
+import { useDelete } from "./query"; // fonction de suppression logique
 
 export default function Process({
   open,
@@ -20,17 +20,17 @@ export default function Process({
   viderChamp,
   onNotify,
 }) {
-  const [avis, setAvis] = useState(false);
-  const [passe, setPasse] = useState("");
+  const [avis, setAvis] = useState(false); //demande avis de supprimer
+  const [passe, setPasse] = useState(""); // code de sécurité
   const { remove, loading } = useDelete();
 
-  const reset = () => {
+  const reset = () => { // tout vider et reprendre à zéro
     setPasse("");
     setAvis(false);
     handleClose();
   };
 
-  const handleSuppression = async () => {
+  const handleSuppression = async () => {  // avis
     if (!avis) {
       setAvis(true);
       return;
@@ -45,19 +45,21 @@ export default function Process({
       response.message,
       response.statut === "success" ? "success" : "error",
     );
-    if (response.statut === "success") {
+
+    if (response.statut === "success") { // réponse du serveur
       await chargeListe();
       viderChamp();
     }
-    reset();
+    reset(); 
   };
 
   return (
+    
     <Dialog open={open} onClose={reset} aria-labelledby="dialog-suppression">
       <DialogTitle id="dialog-suppression">
         Confirmation de suppression
       </DialogTitle>
-
+        {/* Demande d'avis */}
       <DialogContent>
         <DialogContentText>
           Voulez-vous supprimer cette personne ?
@@ -67,7 +69,7 @@ export default function Process({
           </strong>
         </DialogContentText>
 
-        {avis && (
+        {avis && ( // Si avis accordé, alors on demande le code de sécurité
           <TextField
             autoFocus
             margin="dense"
@@ -81,6 +83,7 @@ export default function Process({
       </DialogContent>
 
       <DialogActions>
+        {/* Accepte ou refuse */}
         <Button onClick={reset} color="inherit">
           Annuler
         </Button>

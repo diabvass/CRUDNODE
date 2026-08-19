@@ -40,6 +40,7 @@ export default function Liste() {
         }
       })
       .catch((err) => {
+        console.error(err);
         setError(err.message);
       })
       .finally(() => {
@@ -71,9 +72,17 @@ export default function Liste() {
       </Box>
     );
   }
-
+  // Message d'erreur si la requête échoue
   if (error) {
-    return <Alert severity="error">{error}</Alert>;
+    return (
+      <Alert
+        component={Container}
+        sx={{ p: 5, mt: "30vh", textAlign: "center", fontSize: "18px", display: "inline-block" }}
+        severity="error"
+      >
+        Erreur lors du chargement des données
+      </Alert>
+    );
   }
 
   return (

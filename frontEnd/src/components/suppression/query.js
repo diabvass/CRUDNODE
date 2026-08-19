@@ -1,8 +1,8 @@
 import { useState } from "react";
-export function useDelete() {
+export function useDelete() { // procedure de suppression
     const [loading, setLoading] = useState(false);
 
-    const remove = async ({ matricule, passe }) => {
+    const remove = async ({ matricule, passe }) => { // fonction supprimer
         setLoading(true);
         try {
             const response = await fetch("http://localhost:8080/deleteUser", {
@@ -10,23 +10,23 @@ export function useDelete() {
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({
+                body: JSON.stringify({ // passe les données 
                     matricule,
                     passe,
                 }),
             });
-            const data = await response.json();
+            const data = await response.json(); // réponse du serveur
             return data;
         } catch (err) {
             return {
                 statut: "error",
                 message: "Erreur lors de la demande : ", err,
             };
-        } finally {
+        } finally { // fin de chargement
             setLoading(false);
         }
     };
-    return {
+    return { // retourne les résultats et le statut
         remove,
         loading,
     };

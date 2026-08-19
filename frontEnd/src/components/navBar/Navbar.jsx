@@ -36,7 +36,7 @@ export default function Navbar() {
       <AppBar color="primary" position="fixed">
         <Toolbar>
           <Typography variant="h6" sx={{ flexGrow: 1 }}>
-            RHGEST
+            Personnel
           </Typography>
 
           {/* Menu Desktop */}

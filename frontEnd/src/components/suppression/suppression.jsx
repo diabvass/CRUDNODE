@@ -15,12 +15,13 @@ import {
 } from "@mui/material";
 
 export default function Suppression() {
-  const [data, setData] = useState([]);
-  const [query, setQuery] = useState("");
-  const [personne, setPersonne] = useState(null);
-  const [open, setOpen] = useState(false);
+  const [data, setData] = useState([]); // reception des données du personnel
+  const [query, setQuery] = useState(""); // matricule
+  const [personne, setPersonne] = useState(null); // reception du personnel après matricule
+  const [open, setOpen] = useState(false); // modal
   const [notification, setNotification] = useState(null);
   const onNotify = (message, severity = "info") => {
+    // écouteur dans process
     setNotification({
       message,
       severity,
@@ -28,12 +29,14 @@ export default function Suppression() {
   };
 
   const viderChamp = () => {
+    // tout effacer
     setQuery("");
     setPersonne(null);
     setTimeout(() => {
       setNotification(null);
     }, 1000);
   };
+  // raffraichir la liste après la suppression
   const chargeListe = () => {
     fetch(`${import.meta.env.VITE_API_URL}:8080/liste`)
       .then((res) => res.json())
@@ -42,17 +45,29 @@ export default function Suppression() {
       })
       .catch((err) => console.error(err));
   };
+
   useEffect(() => {
+    // remonte une fois
     chargeListe();
   }, []);
 
+  // Validation du formulaire
   const handleSubmit = (e) => {
     e.preventDefault();
     setNotification(null);
-    const resultat = data.find(
-      (personne) => personne.matricule.toLowerCase() === query,
-    );
+    if (!query || query.trim() === "") {
+      setNotification({
+        message: "Champ vide",
+        severity: "warning",
+      });
+      return;
+    }
 
+    // chercher par le matricule avec find
+    const resultat = data.find(
+      (personne) => personne.matricule.toUpperCase() === query.toUpperCase(),
+    );
+    // bloc des resultats
     if (resultat) {
       setPersonne(resultat);
     } else {
@@ -65,7 +80,7 @@ export default function Suppression() {
   };
 
   return (
-    <Container maxWidth="sm">
+    <Container maxWidth="md">
       <Box
         component="form"
         onSubmit={handleSubmit}
@@ -76,7 +91,11 @@ export default function Suppression() {
           borderRadius: 2,
         }}
       >
-        <Typography variant="h5" align="center" mb={3}>
+        <Typography
+          variant="h5"
+          align="center"
+          sx={{ m: 2, fontWeight: "bold" }}
+        >
           Suppression d'une personne
         </Typography>
 
@@ -120,11 +139,14 @@ export default function Suppression() {
             </CardContent>
           </Card>
         )}
+
+        {/*Bloc de notification */}
         {notification && (
           <Alert severity={notification.severity} sx={{ mt: 2 }}>
             {notification.message}
           </Alert>
         )}
+        {/*Processus, logique et contrôle de suppression */}
         <Process
           open={open}
           handleClose={() => setOpen(false)}

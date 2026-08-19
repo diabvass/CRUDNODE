@@ -33,9 +33,10 @@ function Insertion() {
     const data = new FormData(form);
 
     const formObject = Object.fromEntries(data.entries()); // transforme en objets
+    formObject.matricule = data.get("matricule").toUpperCase(); // toutes les matricules en majuscule
     formObject.loisir = data.getAll("loisirs").join(", ");
     delete formObject["loisirs"]; // delete l'ancien
-    
+
     setOpen(true);
 
     try {
@@ -80,17 +81,15 @@ function Insertion() {
       component="form"
       ref={formRef}
       onSubmit={Valide}
-      autoComplete="off"
       sx={{
         display: "flex",
         flexDirection: "column",
         gap: 2,
-        maxWidth: 500,
+        maxWidth: 800,
         mx: "auto",
-        mt: 4,
-        p: 3,
+        p: 2,
         border: "1px solid #ddd",
-        borderRadius: 2,
+        borderRadius: 5,
       }}
     >
       <TextField label="Matricule" name="matricule" required fullWidth />
@@ -104,14 +103,18 @@ function Insertion() {
         fullWidth
         slotProps={{
           inputLabel: {
-            shrink: true,
+            shrink: true, // bloquer l'écriture haut
           },
         }}
       />
 
       <FormLabel>Sexe</FormLabel>
       <RadioGroup row name="sexe" defaultValue="">
-        <FormControlLabel value="Masculin" control={<Radio />} label="Masculin" />
+        <FormControlLabel
+          value="Masculin"
+          control={<Radio />}
+          label="Masculin"
+        />
         <FormControlLabel value="Feminin" control={<Radio />} label="Féminin" />
       </RadioGroup>
 
@@ -138,8 +141,12 @@ function Insertion() {
       </Box>
 
       <Box sx={{ display: "flex", gap: 2, mt: 2 }}>
-        <Button type="submit" variant="contained" color="success">Insérer</Button>
-        <Button type="reset" variant="outlined" color="error">Annuler</Button>
+        <Button type="submit" variant="contained" color="primary">
+          Insérer
+        </Button>
+        <Button type="reset" variant="contained" color="error">
+          Annuler
+        </Button>
       </Box>
 
       <Backdrop
