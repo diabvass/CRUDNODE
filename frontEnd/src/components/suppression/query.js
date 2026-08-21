@@ -5,7 +5,7 @@ export function useDelete() { // procedure de suppression
     const remove = async ({ matricule, passe }) => { // fonction supprimer
         setLoading(true);
         try {
-            const response = await fetch("http://localhost:8080/deleteUser", {
+            const response = await fetch(import.meta.env.VITE_API_URL_DELETE_USER, {
                 method: "DELETE",
                 headers: {
                     "Content-Type": "application/json",

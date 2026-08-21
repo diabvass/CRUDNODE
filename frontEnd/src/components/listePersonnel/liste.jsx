@@ -24,10 +24,10 @@ export default function Liste() {
   const [search, setSearch] = useState("");
 
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [rowsPerPage, setRowsPerPage] = useState(8);
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}:8080/liste`)
+    fetch(import.meta.env.VITE_API_URL_LISTE)
       .then((res) => {
         if (!res.ok) {
           throw new Error("Erreur serveur");

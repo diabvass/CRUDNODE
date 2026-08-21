@@ -38,7 +38,7 @@ export default function Suppression() {
   };
   // raffraichir la liste après la suppression
   const chargeListe = () => {
-    fetch(`${import.meta.env.VITE_API_URL}:8080/liste`)
+    fetch(import.meta.env.VITE_API_URL_LISTE)
       .then((res) => res.json())
       .then((result) => {
         setData(result.data);

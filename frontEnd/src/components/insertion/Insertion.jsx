@@ -40,7 +40,7 @@ function Insertion() {
     setOpen(true);
 
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}:8080/addUser`, {
+      const res = await fetch(import.meta.env.VITE_API_URL_ADD_USER, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
