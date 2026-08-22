@@ -111,17 +111,11 @@ const deleteUser = async (req, res) => {
 
 const updateUser = async (req, res) => {
   try {
-    const { matricule, nom, prenoms } = req.body;
+    const { matricule, nom, prenoms, loisir, specialite } = req.body;
 
-    const sql = "UPDATE personnel SET nom=?, prenoms=? WHERE matricule=?";
-    const [reponse] = await db.query(sql, [nom, prenoms, matricule]);
 
-    if (reponse.affectedRows === 0) {
-      return res.status(404).json({
-        message: 'Aucun utilisateur trouvé avec ce matricule',
-        statut: 'warning'
-      });
-    }
+    const sql = "UPDATE personnel SET nom=?, prenoms=?, loisir=?, specialite=? WHERE matricule=?";
+    const [reponse] = await db.query(sql, [nom, prenoms, loisir, specialite, matricule]);
 
     return res.status(200).json({
       message: "Modification effectuée avec succès",
@@ -131,15 +125,15 @@ const updateUser = async (req, res) => {
   } catch (err) {
     console.error(err);
     return res.status(500).json({
-      message: 'Erreur serveur',
+      message: 'Erreur serveur', err,
       statut: 'error'
     });
   }
 };
 
-  module.exports = {
-    addUser,
-    liste,
-    deleteUser,
-    updateUser
-  };
+module.exports = {
+  addUser,
+  liste,
+  deleteUser,
+  updateUser
+};
