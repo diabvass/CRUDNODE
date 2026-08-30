@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import PolicyIcon from "@mui/icons-material/Policy";
+import { specialites, loisirs } from "../insertion/dataInsertion";
 
 import {
   Container,
@@ -7,9 +8,14 @@ import {
   Box,
   Typography,
   Button,
-  CardActions,
   Alert,
   Toolbar,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Checkbox,
+  FormControlLabel,
 } from "@mui/material";
 
 export default function Update() {
@@ -34,12 +40,14 @@ export default function Update() {
     chargeListe();
   }, []);
 
+  // Validation et requête
   const handleSubmit = async (e) => {
     e.preventDefault();
     const form = formRef.current;
     const formData = new FormData(form);
     const data = Object.fromEntries(formData.entries());
-
+    data.loisir = formData.getAll("loisirs").join(", ");
+    delete data["loisirs"];
     try {
       const reponse = await fetch(import.meta.env.VITE_API_URL_UPDATE_USER, {
         method: "PUT",
@@ -54,18 +62,28 @@ export default function Update() {
         message: result.message,
         statut: result.statut,
       });
-      console.log(result);
+
+      if (result.statut === "success") {
+        setTimeout(() => {
+          setNotification(null);
+          setQuery("");
+          setPersonne(null);
+        }, 3000);
+      }
     } catch (error) {
       console.log(error);
     }
   };
 
-  // Validation du formulaire
+  // Validation de la recherche
   const queryCheek = (e) => {
     e.preventDefault();
-
+    setNotification(null);
     if (!query || query.trim() === "") {
-      console.log("null dinnée");
+      setNotification({
+        message: "Entrer un matricule",
+        statut: "error",
+      });
       return;
     }
 
@@ -78,84 +96,133 @@ export default function Update() {
       setPersonne(resultat);
     } else {
       setPersonne(null);
+      setNotification({
+        message: "Aucun personnel trouvé",
+        statut: "warning",
+      });
     }
   };
 
   return (
-    <Container>
-      <Typography variant="h5" align="center" sx={{ m: 2, fontWeight: "bold" }}>
+    <Container maxWidth="md" sx={{ boxShadow: 2, p: 3 }}>
+      <Typography variant="h5" align="center" sx={{ fontWeight: "bold" }}>
         Modification données personnel
       </Typography>
       <Toolbar />
 
-      {personne && (
-        <Box component="form" onSubmit={handleSubmit} ref={formRef}>
-          <Box component={Container}>
-            <Box
-              sx={{
-                display: "flex",
-                flexDirection: "column",
-                gap: 2,
-              }}
-            >
-              <TextField
-                label="Matricule"
-                name="matricule"
-                value={personne.matricule}
-              />
+      <Box
+        component="form"
+        onSubmit={personne ? handleSubmit : queryCheek}
+        ref={formRef}
+      >
+        {personne && personne ? ( // Validation
+          <Box>
+            <Box component={Container}>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: 2,
+                }}
+              >
+                <TextField
+                  label="Matricule"
+                  name="matricule"
+                  value={personne.matricule}
+                />
 
-              <TextField label="Nom" name="nom" defaultValue={personne.nom} />
+                <TextField label="Nom" name="nom" defaultValue={personne.nom} />
 
-              <TextField
-                label="Prénoms"
-                name="prenoms"
-                defaultValue={personne.prenoms}
-              />
+                <TextField
+                  label="Prénoms"
+                  name="prenoms"
+                  defaultValue={personne.prenoms}
+                />
 
-              <TextField
-                label="Loisirs"
-                name="loisir"
-                defaultValue={personne.loisir}
-              />
-              
+                <FormControl fullWidth>
+                  <InputLabel>Spécialité</InputLabel>
+                  <Select
+                    name="specialite"
+                    label="Spécialité"
+                    defaultValue={personne.specialite}
+                  >
+                    {specialites.map((s) => (
+                      <MenuItem key={s.id} value={s.nom}>
+                        {s.nom}
+                      </MenuItem>
+                    ))}
+                  </Select>
+                </FormControl>
+
+                <TextField
+                  label="Loisirs"
+                  defaultValue={personne.loisir}
+                  disabled
+                />
+                <Box sx={{ display: "flex", flexWrap: "wrap" }}>
+                  {loisirs.map((l) => (
+                    <FormControlLabel
+                      key={l.id}
+                      control={
+                        <Checkbox
+                          name="loisirs"
+                          value={l.nom}
+                        />
+                      }
+                      label={l.nom}
+                    />
+                  ))}
+                </Box>
+              </Box>
             </Box>
           </Box>
-          <CardActions>
-            <Button variant="contained" type="submit">
-              APPLOQUER
-            </Button>
-          </CardActions>
+        ) : (
+          // QUERY
+          <Box>
+            <TextField
+              label="Rechercher par matricule"
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              fullWidth
+            />
+          </Box>
+        )}
+
+        {/*BUTTONS */}
+        <Box component="footer" sx={{ mt: 2, display: "flex", gap: 1.5 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color={personne ? "success" : "primary"}
+          >
+            {personne ? (
+              "Valider la modification"
+            ) : (
+              <Typography>
+                <PolicyIcon sx={{ fontSize: 13 }} /> Chercher
+              </Typography>
+            )}
+          </Button>
+          <Button
+            color={personne ? "warning" : "error"}
+            variant="contained"
+            type="reset"
+            onClick={() => {
+              if (personne) {
+                setPersonne(null);
+              } else setQuery("");
+            }}
+          >
+            {personne && personne ? "Retour" : "Effacer"}
+          </Button>
         </Box>
-      )}
+      </Box>
 
       {notification && (
-        <Box component={Container} sx={{}}>
+        <Box sx={{ mt: 2 }}>
           <Alert variant="standard" color={notification.statut}>
             {notification.message}
           </Alert>
-        </Box>
-      )}
-
-      {!personne && (
-        <Box
-          component="form"
-          onSubmit={queryCheek}
-          sx={{
-            p: 2,
-            border: "1px solid #ddd",
-            borderRadius: 2,
-          }}
-        >
-          <TextField
-            label="Rechercher par matricule"
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            fullWidth
-          />
-
-          <Button type="submit" variant="contained" sx={{ mt: 2}}>
-            <PolicyIcon /> Chercher
-          </Button>
         </Box>
       )}
     </Container>
